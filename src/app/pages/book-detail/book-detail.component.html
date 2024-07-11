@@ -1,0 +1,109 @@
+@if(bookResult$ | async; as book){
+<!-- Container -->
+<section class="container">
+  <div class="book-detail-container">
+    <!-- Book Cover -->
+    <img [src]="book.formats['image/jpeg']" alt="Cover" class="cover-image" />
+    <!-- Book details -->
+    <div>
+      <div class="title-container">
+        <i class="pi pi-book" style="font-size: 2rem"></i>
+        <h3>{{ book.title }}</h3>
+      </div>
+
+      <!-- Derechos de autor -->
+      <div class="spec-container">
+        <div class="title-container">
+          <i class="pi pi-address-book" style="font-size: 1.5rem"></i
+          ><span class="title">Derechos de autor</span>
+        </div>
+        <span>{{
+          book.copyright
+            ? "El libro tiene derechos de autor, el libro no es de dominio público."
+            : "Sin derechos de autor, el libro es de dominio público."
+        }}</span>
+      </div>
+
+      <!-- Autores del libro -->
+      <div class="spec-container">
+        <div class="title-container">
+          <i class="pi pi-user" style="font-size: 1.5rem"></i>
+          <span class="title"
+            >{{ book.authors.length > 1 ? "Autores" : "Autor" }}:</span
+          >
+        </div>
+        <ul>
+          @for(author of book.authors; track $index){
+          <li>
+            {{ author.name }} ({{ author.birth_year }}-{{ author.death_year }})
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Temas del libro -->
+      <div>
+        <div class="title-container">
+          <i class="pi pi-info-circle" style="font-size: 1.5rem"></i>
+          <span class="title">Temas del libro:</span>
+        </div>
+        <ul>
+          @for(subject of book.subjects; track $index){
+          <li>{{ subject }}</li>
+          }
+        </ul>
+      </div>
+
+      <!-- Idioma del libro -->
+      <div>
+        <div class="title-container">
+          <i class="pi pi-language" style="font-size: 1.5rem"></i>
+          <span class="title">Idiomas del libro:</span>
+        </div>
+        <ul>
+          @for(lang of book.languages; track $index){
+          <li>{{ lang }}</li>
+          }
+        </ul>
+      </div>
+
+      <!-- Número de descargas -->
+      <div>
+        <div class="title-container">
+          <i class="pi pi-language" style="font-size: 1.5rem"></i>
+          <span class="title">Cantidad de descargas:</span>
+        </div>
+        <span>El libro se ha descargaddo {{ book.download_count }} veces</span>
+      </div>
+
+      <!-- Botones -->
+      <div style="display: flex; gap: 1rem">
+        <a
+          routerLink="/"
+          class="p-button"
+          style="text-decoration: none; margin-top: 2rem"
+        >
+          <i
+            class="pi pi-arrow-left"
+            style="font-size: 1.5rem; margin-right: 1rem"
+          ></i>
+          <span>Volver a libros</span>
+        </a>
+        <a
+          href="{{ book.formats['application/octet-stream'] }}"
+          class="p-button"
+          style="text-decoration: none; margin-top: 2rem"
+        >
+          <i
+            class="pi pi-download"
+            style="font-size: 1.5rem; margin-right: 1rem"
+          ></i>
+          <span>Descargar</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+} @if(errorMessage){
+<app-error-message [errorMessage]="errorMessage" />
+}

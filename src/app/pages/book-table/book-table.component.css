@@ -1,0 +1,50 @@
+.card {
+  width: 80%;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+}
+
+.search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.pagination-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.input-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.actions-container {
+  display: flex;
+  gap: 5px;
+}
+
+@media screen and (max-width: 768px) {
+  .card {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .search {
+    flex-direction: column;
+  }
+
+  .input-container {
+    width: 100%;
+  }
+}

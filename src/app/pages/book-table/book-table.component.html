@@ -1,0 +1,142 @@
+<!-- Si tenemos un resultado del observable, se le pasan los libros a la tabla-->
+<div class="card">
+  @defer (on viewport){ @if( bookResults$ | async; as resultObject){
+
+  <!-- Barra de busqueda y paginacion -->
+  <div class="search">
+    <!-- Paginacion -->
+    <div class="pagination-container">
+      <p-button
+        type="button"
+        icon="pi pi-chevron-left"
+        (click)="resultObject.previous !== null && prev()"
+        [disabled]="resultObject.previous === null"
+        styleClass="p-button-text"
+        label="Anterior"
+      />
+      <p-button type="button" [disabled]="true" styleClass="p-button-text">
+        {{ first }}
+      </p-button>
+      <p-button
+        type="button"
+        icon="pi pi-chevron-right"
+        (click)="resultObject.next !== null && next()"
+        [disabled]="resultObject.next === null"
+        styleClass="p-button-text"
+        label="Siguiente"
+        iconPos="right"
+      />
+    </div>
+
+    <!-- Form - search books -->
+    <form class="input-container" [formGroup]="form" (ngSubmit)="callService()">
+      <!-- Titulo del libro -->
+      <input
+        type="text"
+        pInputText
+        placeholder="Título del libro"
+        formControlName="title"
+      />
+      <!-- Nacimiento del autor -->
+      <p-inputNumber
+        placeholder="Nacimiento del autor"
+        mode="decimal"
+        inputId="withoutgrouping"
+        [useGrouping]="false"
+        max="2024"
+        formControlName="birthDate"
+      />
+      <!-- Muerte del autor -->
+      <p-inputNumber
+        placeholder="Muerte del autor"
+        mode="decimal"
+        inputId="withoutgrouping"
+        [useGrouping]="false"
+        max="2024"
+        formControlName="deathDate"
+      />
+      <button type="submit" class="p-button">Obtener</button>
+    </form>
+  </div>
+  <!-- Tabla de libros -->
+  <p-table
+    [value]="resultObject.results"
+    [paginator]="false"
+    [rows]="rows"
+    [first]="first"
+    [totalRecords]="resultObject.count"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ border: '1px solid #e1e1e1', margin: 'auto' }"
+    (onPage)="pageChange($event)"
+    [rowsPerPageOptions]="[10, 20, 32]"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Autores</th>
+        <th>Título</th>
+        <th>Descargas</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-book>
+      <tr>
+        <td style="width: 33%">
+          @for (item of book.authors; track $index) {
+          <span>{{ item.name }}</span>
+          <span>({{ item.birth_year }}- {{ item.death_year }})</span>
+          <br />
+          }
+        </td>
+        <td style="width: 33%">{{ book.title }}</td>
+        <td style="width: 33%">{{ book.download_count }} descargas</td>
+        <td class="actions-container">
+          <!-- Editar libro -->
+          <p-button
+            icon="pi pi-pencil"
+            pTooltip="Editar"
+            tooltipPosition="top"
+          />
+
+          <!-- Eliminar libro -->
+          <p-button
+            icon="pi pi-trash"
+            pTooltip="Eliminar"
+            tooltipPosition="top"
+            severity="danger"
+          />
+
+          <!-- Ver detalles del libro -->
+          <a
+            routerLink="/libro/{{ book.id }}"
+            pTooltip="Ver detalles"
+            tooltipPosition="top"
+          >
+            <p-button icon="pi pi-eye" />
+          </a>
+
+          <!-- Eliminar libro -->
+          <a
+            href="{{ book.formats['application/octet-stream'] }}"
+            pTooltip="Descargar"
+            tooltipPosition="top"
+          >
+            <p-button icon="pi pi-download" severity="success" />
+          </a>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  }@else{
+  <app-loader />
+  } }@placeholder {
+  <app-loader />
+  } @loading (minimum 5s) {
+  <app-loader />
+  }
+
+  <!-- Si ocure algun error al intentar hacer la peticion, se muestra el componente del error-->
+  @if(errorMessage){
+  <app-error-message [errorMessage]="errorMessage" />
+  }
+</div>
